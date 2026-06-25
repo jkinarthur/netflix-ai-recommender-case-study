@@ -3,10 +3,18 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
 # Virtual environments
 .venv/
 venv/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
 
 # Local data and generated artifacts
 data/

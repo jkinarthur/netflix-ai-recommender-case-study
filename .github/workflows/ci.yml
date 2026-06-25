@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Static syntax check
+        run: |
+          python -m py_compile app.py run_demo.py regenerate_charts.py \
+            build_v4_pptx.py build_v6_logical_flow.py add_coldstart_pso_slide.py \
+            src/recommender_pipeline.py
+
+      - name: Pipeline smoke test
+        run: |
+          python - << 'PY'
+          from pathlib import Path
+          from src.recommender_pipeline import run_pipeline
+          root = Path('.').resolve()
+          run_pipeline(root, k=10)
+          print('pipeline-smoke-ok')
+          PY
